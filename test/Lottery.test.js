@@ -22,4 +22,18 @@ describe('Lottery Contract', () => {
     it('deploys a contract', () => {
         assert.ok(lottery.options.address);
     });
+
+    it('allows one account to enter', async () => {     // because it has async code inside in it, it needs to wait
+        await lottery.methods.enter().send({    
+            from: accounts[0],   // who is attempting to enter
+            value: web3.utils.toWei('0.02', 'ether')             // some money we want to send along
+        });
+
+        const players = await lottery.methods.getPlayers().call({
+            from: accounts[0]
+        });
+        
+        assert.equal(accounts[0], players[0]);
+        assert.equal(1, players.length);
+    });
 });
