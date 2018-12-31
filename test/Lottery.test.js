@@ -36,4 +36,37 @@ describe('Lottery Contract', () => {
         assert.equal(accounts[0], players[0]);
         assert.equal(1, players.length);
     });
+
+    it('multiple account to enter', async () => {     // because it has async code inside in it, it needs to wait
+        await lottery.methods.enter().send({    
+            from: accounts[0],   // who is attempting to enter
+            value: web3.utils.toWei('0.02', 'ether')             // some money we want to send along
+        });
+
+        await lottery.methods.enter().send({    
+            from: accounts[1],   // who is attempting to enter
+            value: web3.utils.toWei('0.02', 'ether')             // some money we want to send along
+        });
+
+        await lottery.methods.enter().send({    
+            from: accounts[2],   // who is attempting to enter
+            value: web3.utils.toWei('0.02', 'ether')             // some money we want to send along
+        });
+
+        const players = await lottery.methods.getPlayers().call({
+            from: accounts[0]
+        });
+        
+        assert.equal(accounts[0], players[0]);
+        assert.equal(accounts[1], players[1]);
+        assert.equal(accounts[2], players[2]);
+        assert.equal(3, players.length);
+    });
+
+    // it('requires a minimum amout of ether to enter', async () => {
+    //     await lottery.methods.enter().send({
+    //         from: accounts[0],
+    //         value: 200
+    //     });
+    // });
 });
